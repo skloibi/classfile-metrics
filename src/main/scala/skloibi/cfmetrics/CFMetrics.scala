@@ -1,8 +1,6 @@
 package skloibi.cfmetrics
 
-import java.nio.file.{Files, Paths}
-
-import javassist.ClassPool
+import java.nio.file.Paths
 
 object CFMetrics {
   val usage =
@@ -15,17 +13,8 @@ object CFMetrics {
 
     argsList match {
       case Nil | "-h" :: _ | "--help" :: _ => println(usage)
-      case list                            =>
-        val classPool = ClassPool.getDefault
-
-        list.toStream
-          .distinct
-          .map(Paths.get(_))
-          .filter(Files.isRegularFile(_))
-          .map(Files.newInputStream(_))
-          .map(classPool.makeClass)
-          .map(ClassAnalyzer)
-          .foreach(_.analyze())
+      case a :: b :: _                     =>
+        Analysis.evaluatePairs(ClassFileResult(Paths.get(a)))(ClassFileResult(Paths.get(b)))
     }
 
   }
