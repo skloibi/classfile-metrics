@@ -19,7 +19,6 @@ object Analysis {
   def format(d: Double): String =
     df.format(d)
 
-
   def evaluatePairs(a: ClassFileResult)(b: ClassFileResult): Unit = {
     println(a.clazz.getName)
     println(b.clazz.getName)

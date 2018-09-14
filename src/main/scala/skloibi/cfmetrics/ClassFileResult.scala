@@ -41,14 +41,14 @@ case class ClassFileResult(path: Path) extends Result {
   val nFieldAttributes = use {
     Metric("#FA", "Attributes per field (median)") {
       Analysis.median {
-        fieldInfos.map(_.getAttributes.size)
+        fields.map(_.getModifiers).map(JavassistHelper.countModifiers)
       }.toDouble
     }
   }
 
   val fieldAttributesMin = use {
     Metric("minFA", "Minimal attributes of a field") {
-      fieldInfos.map(_.getAttributes.size) match {
+      fields.map(_.getModifiers).map(JavassistHelper.countModifiers) match {
         case a: Array[_] if a.isEmpty => 0
         case other       => other.min
       }
@@ -57,7 +57,7 @@ case class ClassFileResult(path: Path) extends Result {
 
   val fieldAttributesMax = use {
     Metric("maxFA", "Maximal attributes of a field") {
-      fieldInfos.map(_.getAttributes.size) match {
+      fields.map(_.getModifiers).map(JavassistHelper.countModifiers) match {
         case a: Array[_] if a.isEmpty => 0
         case other       => other.max
       }
@@ -67,14 +67,14 @@ case class ClassFileResult(path: Path) extends Result {
   val nMethodAttributes = use {
     Metric("#MA", "Attributes per method (median)") {
       Analysis.median {
-        methodInfos.map(_.getAttributes.size)
+        methods.map(_.getModifiers).map(JavassistHelper.countModifiers)
       }.toDouble
     }
   }
 
   val methodAttributesMin = use {
     Metric("minMA", "Minimal attributes of a method") {
-      methodInfos.map(_.getAttributes.size) match {
+      methods.map(_.getModifiers).map(JavassistHelper.countModifiers) match {
         case a: Array[_] if a.isEmpty => 0
         case other       => other.min
       }
@@ -83,7 +83,7 @@ case class ClassFileResult(path: Path) extends Result {
 
   val methodAttributesMax = use {
     Metric("maxMA", "Maximal attributes of a method") {
-      methodInfos.map(_.getAttributes.size) match {
+      methods.map(_.getModifiers).map(JavassistHelper.countModifiers) match {
         case a: Array[_] if a.isEmpty => 0
         case other       => other.max
       }
