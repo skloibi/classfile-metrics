@@ -2,6 +2,7 @@ package skloibi.cfmetrics
 
 import java.nio.file.{Files, Path}
 
+import javassist.expr.{ConstructorCall, ExprEditor, FieldAccess, MethodCall}
 import javassist.{ClassPool, CtConstructor}
 
 import scala.collection.immutable.Stream.Empty
@@ -131,6 +132,36 @@ case class ClassFileResult(path: Path) extends Result {
         .map(_.getCodeAttribute)
         .map(_.getCodeLength)
         .sum
+    }
+  }
+
+  val totalMethodCalls = use {
+    Metric("#Call", "Total method calls") {
+      methods.toStream.map(m => {
+        var i = 0
+
+        m.instrument(new ExprEditor() {
+          override def edit(m: MethodCall): Unit = i += 1
+
+          override def edit(c: ConstructorCall): Unit = i += 1
+        })
+
+        i
+      }).sum
+    }
+  }
+
+  val totalFieldAccessLocations = use {
+    Metric("#Access", "Total field access locations") {
+      methods.toStream.map(m => {
+        var i = 0
+
+        m.instrument(new ExprEditor() {
+          override def edit(f: FieldAccess): Unit = i += 1
+        })
+
+        i
+      }).sum
     }
   }
 
