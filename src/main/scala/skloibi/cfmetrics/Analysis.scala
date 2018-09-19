@@ -24,6 +24,7 @@ object Analysis {
     println(b.clazz.getName)
     Stream(a.metrics, b.metrics)
       .flatMap(_.keys)
+      .sorted
       .distinct
       .map(k => (a.metrics.get(k), b.metrics.get(k)))
       .foreach {
