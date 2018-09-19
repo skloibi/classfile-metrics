@@ -165,4 +165,10 @@ case class ClassFileResult(path: Path) extends Result {
     }
   }
 
+  val totalConstPool = use {
+    Metric("#CP", "Total constant pool entries") {
+      clazz.getClassFile.getConstPool.getSize
+    }
+  }
+
 }
